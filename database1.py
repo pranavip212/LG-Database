@@ -18,6 +18,7 @@ WHERE name = ?
 ORDER BY rating DESC
 LIMIT 1;"""
 
+GET_SUPPLIER_NAME = "SELECT * FROM glosses WHERE supplier = ?;"
 
 class glossDatabase:
     def __init__(self, db_name= 'data.db'):
@@ -54,6 +55,10 @@ class glossDatabase:
     def get_best_prep_for_gloss(self, name):
         with self.connection:
             return self.connection.execute(GET_BEST_PREP_FOR_GLOSS, (name,)).fetchone()
+
+    def get_supplier_name (self, supplier)
+        with self.connection:
+            return self.connection.execute(GET_SUPPLIER_NAME, (supplier,)).fetchone()
 
 
 

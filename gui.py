@@ -21,6 +21,7 @@ mainframe.rowconfigure(0, weight = 1)
 ###GLOBALS
 gloss_data = []  # global list to store rows
 font_is_large = False
+timestamp_visible = False
 ##################################FUNCTIONS / FUNCTIONALITY#######################
 def add_gloss():
     name = name_entry.get()
@@ -91,8 +92,8 @@ label = Label(root, text="Gloss Database", font =("Arial", 18))
 label.grid(pady=20)
 
 #################### little clock / timestamp req
-time_stamp = Tk.root(root, font=('calibri', 40, 'bold'), background='black', foreground='white')
-time_stamp.pack(pady=20)
+time_stamp = Label(root, font=('calibri', 18, 'bold'), background='black', foreground='white')
+time_stamp.grid(row=1,column = 2)
 
 ######################## INPUT FEILDS  ################
 Label(root, text="Name").grid(row=2, column=0)
@@ -125,8 +126,8 @@ def change_dropdown(*args):
     selection = tkvar.get()
     if selection == "Toggle font":
         toggle_font()
-    else:
-        pass
+    elif selection == "timestamp on/off":
+        toggle_timestamp()
 
         # do other 'stuff' here
        # new_font = ("Helvetica", 16, "bold")
@@ -147,26 +148,21 @@ def toggle_font():
         default_font.config(family = "Arial", size=10)
         font_is_large = False
 
-def toggle_timestamp(*args):
-    if dropdown_var.get() == "Show Timestamp":
-        current_time = time.strftime('%H:%M:%S')
-        label_display.config(text=f"Timestamp: {current_time}")
+def update_time():
+    current_time = strftime('%H:%M:%S %p')  # format the time
+    time_stamp.config(text=current_time)
+    time_stamp.after(1000, update_time)  # call itself again after 1 second
+
+def toggle_timestamp():
+    global timestamp_visible
+    timestamp_visible = not timestamp_visible
+
+    if timestamp_visible:
+        time_stamp.grid(row=1, column=1, columnspan=2, pady=10)  # place it nicely
+        update_time()
     else:
-        label_display.config(text="")
+        time_stamp.grid_remove()
 
-
-   """ #Updayes label w time
-    string_time = strftime('%H:%M:%S %p')
-    time_stamp.config(text=string_time)
-    # Schedule the function to run again after 1s
-    time_stamp.after(1000, update_time)"""
-#font_is_large = False
-"""    
-    print('The current selection is %s.' % selection)
-    if selection == "Change font":
-        print("You have selected %s." % selection)
-
-        def change_dropdown(*args):"""
 
 
 
