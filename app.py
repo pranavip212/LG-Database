@@ -1,4 +1,4 @@
-from database1 import glossDatabase
+"""from database1 import glossDatabase
 db = glossDatabase()
 # time stamp tues 8 = 33.28
 MENU_PROMPT = """ ---- Lip gloss Finder App ----
@@ -89,11 +89,11 @@ def prompt_add_new_gloss(db):
     db.add_gloss(gloss)
     input("\n\n press enter to continue \n\n")
 
-menu()
+menu()"""
 
 
 #new app 
-"""from database1 import glossDatabase
+from database1 import glossDatabase
 from suppliers_db import supplierDatabase
 gloss_db = glossDatabase()
 supplier_db = supplierDatabase()
@@ -256,4 +256,4 @@ else:
             input("\nPress enter to continue\n")
 
 
-menu()"""
+menu()
