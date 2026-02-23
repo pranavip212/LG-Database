@@ -15,6 +15,7 @@ class suppDatabase:
     def __init__(self, db_name= 'data.db'):
         self.connection = sqlite3.connect('data.db')
         self.create_tables()
+        self.connection.execute("PRAGMA foreign_keys = ON")
 
     def create_tables(self):
         with self.connection:
@@ -26,13 +27,15 @@ class suppDatabase:
 
     def get_all_suppliers(self):
        with self.connection:
-           return self.connection.execute(GET_ALL_SUPPLIERS).fetchone()
+           return self.connection.execute(GET_ALL_SUPPLIERS).fetchall()
 
     def get_suppliers_by_id(self, supplier_id):
         with self.connection:
             return self.connection.execute(GET_SUPPLIERS_BY_ID, (supplier_id,)).fetchone()
-#pre populated supplier info for db (info is chat generated, and had some help debugging the populating code)
-    def seed_suppliers(self):
+
+#pre populated supplier info for db (info is chat generated, and had some help debugging the pre-populating code)
+# I decided to prepopulate the supplier info to reduce the chances of user error, and make it easier to use forgein keys
+    def prep_suppliers(self):
         existing_suppliers = self.connection.execute("SELECT COUNT(*) FROM suppliers;").fetchone()[0]
         if existing_suppliers == 0:
             suppliers = [
