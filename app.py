@@ -17,7 +17,8 @@ Please choose one of these options
 7) Find glosses by supplier ID
 8) Look up supplier info
 9) Add glosses from a CSV file
-10) Exit. 
+10) Back up the database to a CSV file (w/ timestamp)
+11) Exit. 
 
 Your selection: """
 
@@ -25,7 +26,7 @@ def menu():
     #self.connection = database1.connect()
     #database1.create_tables(self.connection)
 
-    while (user_input := input(MENU_PROMPT)) != '10':
+    while (user_input := input(MENU_PROMPT)) != '11':
         if user_input == '1':
             prompt_add_new_gloss(gloss_db)
         elif user_input == '2':
@@ -44,6 +45,8 @@ def menu():
             get_supplier_info(supplier_db, gloss_db)
         elif user_input == '9':
             populate_glosses_from_csv(gloss_db, supplier_db)
+        elif user_input == '10':
+            gloss_db.backup_to_csv()
         else:
             print('Invalid input, please try again.')
 
