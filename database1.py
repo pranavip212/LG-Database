@@ -1,5 +1,7 @@
 # new db file 20/2/2026 
 import sqlite3
+import csv
+from datetime import datetime
 
 CREATE_GLOSS_TABLE = "CREATE TABLE IF NOT EXISTS glosses(id INTEGER PRIMARY KEY, name TEXT, method TEXT, rating INTEGER, color TEXT, supplier_id INTEGER, FOREIGN KEY (supplier_id) REFERENCES suppliers(id));"
 
@@ -29,6 +31,7 @@ WHERE glosses.name = ?
 ORDER BY glosses.rating DESC
 LIMIT 1;
 """
+#Citation : https://dev.to/instanceofgod/4-ways-to-backup-mysql-database-to-a-csv-file-3e9j#:~:text=There%20are%20several%20ways%20to%20create%20a,the%20connection%20*%20Print%20a%20confirmation%20message
 
 # used forgien keys to make a relational db strucutre
 # citation: https://www.knack.com/blog/how-to-design-an-effective-relational-database/
@@ -83,3 +86,19 @@ class glossDatabase:
         with self.connection:
             return self.connection.execute(
                 GET_SUPPLIER_INFO_FOR_GLOSS, (name,)).fetchone()
+
+    def backup_to_csv(self, filename = 'gloss_backup.csv'): # filename is a var to avoid hardcoding/so I can reuse the funct
+        rows = self.connection.execute(GET_ALL_GLOSSES).fetchall()
+        with open (filename, 'w') as backup:
+            writer = csv.writer(backup)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            writer.writerow(['id', 'name', 'method', 'rating', 'color', 'supplier_id'] + ['timestamp'])
+            for row in rows:
+                row_w_timestamp = row + (timestamp,)
+                writer.writerow(row_w_timestamp)
+
+        print("Database successfully backed up to CSV!")
+
+
+
+
