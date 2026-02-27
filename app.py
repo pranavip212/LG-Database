@@ -1,5 +1,5 @@
 import csv
-from database1 import glossDatabase
+from gloss_db import glossDatabase
 from supplierDatabase import suppDatabase
 gloss_db = glossDatabase()
 supplier_db = suppDatabase()
