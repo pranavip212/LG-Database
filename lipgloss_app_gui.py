@@ -1,5 +1,6 @@
 from tkinter import *
 from gloss_db import glossDatabase
+from supplierDatabase import suppDatabase
 import random
 from tkinter import messagebox
 import tkinter.font as tkfont
@@ -7,10 +8,12 @@ from PIL import Image, ImageTk
 from time import strftime
 
 db = glossDatabase()
+supplier_db = suppDatabase()
+supplier_db.prep_suppliers()
 
 root = Tk()
 root.title("Gloss App ;)")
-root.geometry('700x700')
+root.geometry('800x750')
 root.configure(bg="#ffd6e7")  #bg color
 
 gui_img = Image.open('lipgloss.png')
@@ -37,6 +40,8 @@ def add_gloss():
     method = method_entry.get()
     rating = rating_entry.get()
     color = color_entry.get()
+    selected = suppVar.get()
+    supplier_id = int(selected.split()[0])
 
     if not name or not method or not rating or not color:
         messagebox.showerror("Error", "You forgot to enter all the feilds")
@@ -46,12 +51,13 @@ def add_gloss():
         rating = int(rating )
     except ValueError:
         messagebox.showerror("Error", "Rating must be a number")
-
+        return
     db.add_gloss({
         "name": name,
         "method": method,
         "rating": rating,
-        "color": color
+        "color": color,
+        "supplier_id": supplier_id
     })
     refresh_list()
     clear_entries()
@@ -120,11 +126,29 @@ rating_entry.grid(row=4, column=1)
 Label(root, text="Color", bg="#ffd6e7").grid(row=5, column=0)
 color_entry = Entry(root)
 color_entry.grid(row=5, column=1)
+
+Label(root, text = "Supplier", bg='#ffd6e7').grid(row=6, column=0)
+# Create a Tkinter variable
+suppVar = StringVar(root)
+suppliers = supplier_db.get_all_suppliers()
+supplier_options = []
+
+for sup in suppliers:
+    supplier_options.append(str(sup[0]) + "   " + sup[1])
+
+suppVar.set(supplier_options[0])
+
+suppOptionMenu = OptionMenu(root, suppVar, *supplier_options)
+suppOptionMenu.config(width=30, bg="lightpink",
+    activebackground="blue",
+    fg="black",
+    activeforeground="pink")
+suppOptionMenu.grid(row = 6, column =1)
  #################################### B U T T O N S #####################
-Button(root, text="Add Gloss", width=15, command=add_gloss).grid(row=6, column=0, pady=10)
-Button(root, text="Delete Gloss", width=15, command=delete_gloss).grid(row=6, column=1, pady=10)
-Button(root, text="Refresh", width=15, command=refresh_list).grid(row=7, column=0, columnspan=2)
-Button(root, text="Clear", width=15, command=clear_entries).grid(row=8, column=0, columnspan=2, pady=5)
+Button(root, text="Add Gloss", width=15, command=add_gloss).grid(row=7, column=0, pady=10)
+Button(root, text="Delete Gloss", width=15, command=delete_gloss).grid(row=7, column=1, pady=10)
+Button(root, text="Refresh", width=15, command=refresh_list).grid(row=8, column=0, columnspan=2)
+Button(root, text="Clear", width=15, command=clear_entries).grid(row=9, column=0, columnspan=2, pady=5)
 
 
 gloss_list = Listbox(root, width=50)
@@ -154,7 +178,7 @@ choices = ['Toggle font',
             'timestamp on/off']
 
 
-optionmenu = OptionMenu(mainframe, tkvar, *choices)
+optionmenu = OptionMenu(root, tkvar, *choices)
 optionmenu.config(width=30, bg="lightpink",
     activebackground="blue",
     fg="black",
